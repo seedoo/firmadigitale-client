@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\.tos]
+@="tosfile"
+[HKEY_CLASSES_ROOT\tosfile\DefaultIcon]
+@="C:\\dsodoo\dsodoo\dsodoo.exe"
+[HKEY_CLASSES_ROOT\tosfile\shell\open\command]
+@="C:\\dsodoo\dsodoo\dsodoo.exe \"%1\""
