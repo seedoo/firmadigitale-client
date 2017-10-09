@@ -54,15 +54,13 @@ endif ()
 if (WIN32)
     add_custom_command(TARGET fdotool
             POST_BUILD
-            COMMAND windeployqt $<TARGET_FILE:fdotool> ${FDOTOOL_DEPLOYQT_TYPE} --dir ${PROJECT_BINARY_DIR}/windeployqt
-            DEPENDS fdotool)
+            COMMAND windeployqt $<TARGET_FILE:fdotool> ${FDOTOOL_DEPLOYQT_TYPE} --dir ${PROJECT_BINARY_DIR}/windeployqt)
 elseif (APPLE)
     set_target_properties(fdotool
             PROPERTIES MACOSX_BUNDLE_ICON_FILE ${FDOTOOL_MAC_ICON_NAME})
     add_custom_command(TARGET fdotool
             POST_BUILD
-            COMMAND macdeployqt $<TARGET_FILE:fdotool> ${FDOTOOL_DEPLOYQT_TYPE} --dir ${PROJECT_BINARY_DIR}/windeployqt
-            DEPENDS fdotool)
+            COMMAND macdeployqt $<TARGET_FILE:fdotool> ${FDOTOOL_DEPLOYQT_TYPE} --dir ${PROJECT_BINARY_DIR}/windeployqt)
 endif ()
 
 if (UNIX)
@@ -79,5 +77,5 @@ install(TARGETS fdotool
 if (WIN32 OR APPLE)
     install(DIRECTORY ${PROJECT_BINARY_DIR}/windeployqt/
             DESTINATION .
-            COMPONENT fdotool)
+            COMPONENT qtlibs)
 endif ()
