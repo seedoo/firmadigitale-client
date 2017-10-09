@@ -37,7 +37,7 @@ add_executable(fdotool
         ${FDOTOOL_MAC_ICON_PATH})
 
 target_link_libraries(fdotool
-#        card
+        #        card
         Qt5::Core
         Qt5::Gui
         Qt5::Svg
@@ -47,3 +47,8 @@ set_target_properties(fdotool
         PROPERTIES
         MACOSX_BUNDLE_ICON_FILE
         ${FDOTOOL_MAC_ICON_NAME})
+
+install(TARGETS fdotool
+        RUNTIME
+        DESTINATION bin
+        COMPONENT fdotool)
