@@ -43,12 +43,41 @@ target_link_libraries(fdotool
         Qt5::Svg
         Qt5::Widgets)
 
-set_target_properties(fdotool
-        PROPERTIES
-        MACOSX_BUNDLE_ICON_FILE
-        ${FDOTOOL_MAC_ICON_NAME})
+file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/windeployqt)
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(FDOTOOL_DEPLOYQT_TYPE "--debug")
+else ()
+    set(FDOTOOL_DEPLOYQT_TYPE "--release")
+endif ()
+
+if (WIN32)
+    add_custom_command(TARGET fdotool
+            POST_BUILD
+            COMMAND windeployqt $<TARGET_FILE:fdotool> ${FDOTOOL_DEPLOYQT_TYPE} --dir ${PROJECT_BINARY_DIR}/windeployqt
+            DEPENDS fdotool)
+elseif (APPLE)
+    set_target_properties(fdotool
+            PROPERTIES MACOSX_BUNDLE_ICON_FILE ${FDOTOOL_MAC_ICON_NAME})
+    add_custom_command(TARGET fdotool
+            POST_BUILD
+            COMMAND macdeployqt $<TARGET_FILE:fdotool> ${FDOTOOL_DEPLOYQT_TYPE} --dir ${PROJECT_BINARY_DIR}/windeployqt
+            DEPENDS fdotool)
+endif ()
+
+if (UNIX)
+    set(FDOTOOL_TARGET_FDOTOOL_INSTALL_DIR ${CMAKE_INSTALL_BINDIR})
+else ()
+    set(FDOTOOL_TARGET_FDOTOOL_INSTALL_DIR ".")
+endif ()
 
 install(TARGETS fdotool
         RUNTIME
-        DESTINATION bin
+        DESTINATION ${FDOTOOL_TARGET_FDOTOOL_INSTALL_DIR}
         COMPONENT fdotool)
+
+if (WIN32 OR APPLE)
+    install(DIRECTORY ${PROJECT_BINARY_DIR}/windeployqt/
+            DESTINATION .
+            COMPONENT fdotool)
+endif ()
