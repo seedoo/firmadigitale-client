@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="TARGETDIR">
+            <Component Id="RegistryEntries" Guid="d26c99be-6606-4eef-9e6f-614c2da82be9" KeyPath="yes">
+                <RegistryKey Root="HKCR" Key="odoo" Action="createAndRemoveOnUninstall">
+                    <RegistryValue Type="string" Value="URL:odoo"/>
+                    <RegistryValue Type="string" Name="URL Protocol" Value=""/>
+                    <RegistryKey Key="shell" Action="createAndRemoveOnUninstall">
+                        <RegistryValue Type="string" Value="open"/>
+                        <RegistryKey Key="open" Action="createAndRemoveOnUninstall">
+                            <RegistryKey Key="command" Action="createAndRemoveOnUninstall">
+                                <RegistryValue Type="string" Value="&quot;[INSTALL_ROOT]fdotool.exe&quot; %1"/>
+                            </RegistryKey>
+                        </RegistryKey>
+                    </RegistryKey>
+                </RegistryKey>
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+</Wix>

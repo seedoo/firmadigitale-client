@@ -76,6 +76,6 @@ install(TARGETS fdotool
 
 if (WIN32 OR APPLE)
     install(DIRECTORY ${PROJECT_BINARY_DIR}/windeployqt/
-            DESTINATION .
+            DESTINATION ${FDOTOOL_TARGET_FDOTOOL_INSTALL_DIR}
             COMPONENT qtlibs)
 endif ()
