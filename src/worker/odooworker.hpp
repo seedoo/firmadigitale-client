@@ -6,6 +6,10 @@
 
 #include "../action.hpp"
 
+#define FDOTOOL_ODOOWORKER_PROGRESS_MAX 10
+
+#define FDOTOOL_ODOOWORKER_API_BOOTSTRAP "/fdo/1/action/bootstrap"
+
 class OdooWorker : public QObject {
 Q_OBJECT
 
@@ -18,9 +22,14 @@ public:
     void doAction(Action action);
 
 private:
+    QString odooUrl;
+    QString token;
+
     QNetworkAccessManager qNetworkAccessManager;
 
-    QString doPost(QUrl url, QString requestBody);
+    QVariantMap call(QString api, QVariantMap data);
+
+    QByteArray doPost(QUrl url, QByteArray requestBody);
 
 signals:
 
