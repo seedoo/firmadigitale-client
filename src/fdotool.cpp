@@ -98,7 +98,7 @@ int FDOTool::run() {
 
         case MAIN:
             mainWindow->show();
-            QtConcurrent::run(this, FDOTool::do_main);
+            QtConcurrent::run(this, &FDOTool::do_main);
             break;
 
         case ODOO:
