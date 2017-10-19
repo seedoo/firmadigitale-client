@@ -1,9 +1,6 @@
-#include <QtCore/QDebug>
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QUrlQuery>
-#include <QtCore/QFile>
-#include <QtCore/QDate>
-#include <QtCore/QDir>
+#include <QtConcurrent/QtConcurrent>
 
 #include "fdotool.hpp"
 
@@ -19,7 +16,21 @@ int main(int argc, char *argv[]) {
 }
 
 FDOTool::FDOTool(int &argc, char **argv) : QApplication(argc, argv) {
+    odooWorker = new OdooWorker();
+
+    mainWindow = new MainWindow();
+    processWindow = new ProcessWindow();
+
+    mode = MAIN;
+
     actions.clear();
+}
+
+FDOTool::~FDOTool() {
+    delete odooWorker;
+
+    delete mainWindow;
+    delete processWindow;
 }
 
 void FDOTool::parseCommandLine() {
@@ -58,6 +69,8 @@ void FDOTool::parseCommandLine() {
         return;
     }
 
+    mode = ODOO;
+
     for (const auto &arg : args) {
         QStringList items = arg.split("?");
 
@@ -76,24 +89,52 @@ void FDOTool::parseCommandLine() {
         Action action(elems.at(0), elems.at(1));
         actions.append(action);
     }
-
 }
 
 int FDOTool::run() {
-    QFile file(QDir::home().filePath(QString("%1-commands.log").arg(APPLICATION_NAME_SHORT)));
-    if (!file.open(QIODevice::Append)) {
-        qDebug() << "Unable to open file";
-        QApplication::exit(1);
+    qDebug() << "RUN";
+
+    switch (mode) {
+
+        case MAIN:
+            mainWindow->show();
+            QtConcurrent::run(this, FDOTool::do_main);
+            break;
+
+        case ODOO:
+            processWindow->show();
+
+            connect(odooWorker, SIGNAL(updateAddress(QString)), processWindow, SLOT(updateAddress(QString)));
+            connect(odooWorker, SIGNAL(updateUser(QString)), processWindow, SLOT(updateUser(QString)));
+            connect(odooWorker, SIGNAL(updateProgress(int, int)), processWindow, SLOT(updateProgress(int, int)));
+
+            QtConcurrent::run(this, &FDOTool::do_odoo);
+
+            break;
     }
 
-    QTextStream stream(&file);
-    for (const auto &action : actions) {
-        stream << QDateTime::currentDateTime().toString("yyyyMMdd HH:mm:ss") << " ---> "
-               << action.getOdooUrl() << " | " << action.getToken() << endl;
-    }
+//    QFile file(QDir::home().filePath(QString("%1-commands.log").arg(APPLICATION_NAME_SHORT)));
+//    if (!file.open(QIODevice::Append)) {
+//        qDebug() << "Unable to open file";
+//        QApplication::exit(1);
+//    }
+//
+//    QTextStream stream(&file);
+//    for (const auto &action : actions) {
+//        stream << QDateTime::currentDateTime().toString("yyyyMMdd HH:mm:ss") << " ---> "
+//               << action.getOdooUrl() << " | " << action.getToken() << endl;
+//    }
+//
+//    file.close();
 
-    file.close();
+    return QApplication::exec();
+}
 
-//    return QApplication::exec();
-    return 0;
+void FDOTool::do_main() {
+
+}
+
+void FDOTool::do_odoo() {
+    for (const auto &action : actions)
+        odooWorker->doAction(action);
 }

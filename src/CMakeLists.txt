@@ -1,3 +1,6 @@
+add_subdirectory(worker)
+add_subdirectory(window)
+
 set(FDOTOOL_SOURCES
         fdotool.cpp
         action.cpp)
@@ -15,7 +18,8 @@ find_package(Qt5 REQUIRED COMPONENTS
         Core
         Gui
         Svg
-        Widgets)
+        Widgets
+        Concurrent)
 
 set(FDOTOOL_MAC_ICON_NAME icon.icns)
 set(FDOTOOL_MAC_ICON_PATH ../icons/macos/icon.icns)
@@ -37,11 +41,13 @@ add_executable(fdotool
         ${FDOTOOL_MAC_ICON_PATH})
 
 target_link_libraries(fdotool
-        #        card
+        worker
+        window
         Qt5::Core
         Qt5::Gui
         Qt5::Svg
-        Qt5::Widgets)
+        Qt5::Widgets
+        Qt5::Concurrent)
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/windeployqt)
 
