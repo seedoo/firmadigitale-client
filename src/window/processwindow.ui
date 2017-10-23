@@ -1,97 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-    <class>ProcessWindow</class>
-    <widget class="QDialog" name="ProcessWindow">
-        <property name="windowModality">
-            <enum>Qt::ApplicationModal</enum>
+ <class>ProcessWindow</class>
+ <widget class="QDialog" name="ProcessWindow">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>640</width>
+    <height>360</height>
+   </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>640</width>
+    <height>360</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>ProcessWindow</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1,0">
+   <item>
+    <widget class="QGroupBox" name="infoGroupBox">
+     <property name="title">
+      <string>Info</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <property name="formAlignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="addressLabel">
+        <property name="text">
+         <string>Odoo Address</string>
         </property>
-        <property name="geometry">
-            <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>420</width>
-                <height>180</height>
-            </rect>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="addressValue">
+        <property name="text">
+         <string>TextLabel</string>
         </property>
-        <property name="maximumSize">
-            <size>
-                <width>420</width>
-                <height>180</height>
-            </size>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="userLabel">
+        <property name="text">
+         <string>User</string>
         </property>
-        <property name="windowTitle">
-            <string>ProcessWindow</string>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="userValue">
+        <property name="text">
+         <string>TextLabel</string>
         </property>
-        <property name="modal">
-            <bool>true</bool>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="jobsLabel">
+        <property name="text">
+         <string>Jobs</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1,0">
-            <item>
-                <widget class="QGroupBox" name="infoGroupBox">
-                    <property name="title">
-                        <string>Info</string>
-                    </property>
-                    <layout class="QFormLayout" name="formLayout">
-                        <item row="0" column="0">
-                            <widget class="QLabel" name="addressLabel">
-                                <property name="text">
-                                    <string>Odoo Address</string>
-                                </property>
-                            </widget>
-                        </item>
-                        <item row="0" column="1">
-                            <widget class="QLabel" name="addressValue">
-                                <property name="text">
-                                    <string>TextLabel</string>
-                                </property>
-                            </widget>
-                        </item>
-                        <item row="1" column="0">
-                            <widget class="QLabel" name="userLabel">
-                                <property name="text">
-                                    <string>User</string>
-                                </property>
-                            </widget>
-                        </item>
-                        <item row="1" column="1">
-                            <widget class="QLabel" name="userValue">
-                                <property name="text">
-                                    <string>TextLabel</string>
-                                </property>
-                            </widget>
-                        </item>
-                    </layout>
-                </widget>
-            </item>
-            <item>
-                <widget class="QProgressBar" name="progressBar">
-                    <property name="value">
-                        <number>24</number>
-                    </property>
-                </widget>
-            </item>
-            <item>
-                <spacer name="verticalSpacer">
-                    <property name="orientation">
-                        <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                        <size>
-                            <width>20</width>
-                            <height>40</height>
-                        </size>
-                    </property>
-                </spacer>
-            </item>
-            <item>
-                <widget class="QDialogButtonBox" name="buttonBox">
-                    <property name="standardButtons">
-                        <set>QDialogButtonBox::Close</set>
-                    </property>
-                </widget>
-            </item>
-        </layout>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="jobsValue">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
-    <resources/>
-    <connections/>
+   </item>
+   <item>
+    <widget class="QTextEdit" name="logText">
+     <property name="font">
+      <font>
+       <family>DejaVu Sans Mono</family>
+      </font>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>24</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
 </ui>

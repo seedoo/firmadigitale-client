@@ -98,17 +98,22 @@ int FDOTool::run() {
 
         case MAIN:
             mainWindow->show();
-            QtConcurrent::run(this, &FDOTool::do_main);
+            QtConcurrent::run(this, &FDOTool::doMain);
             break;
 
         case ODOO:
             processWindow->show();
 
+            connect(odooWorker, SIGNAL(rpcError(QString, QString)), processWindow, SLOT(rpcError(QString, QString)));
+
+            connect(odooWorker, SIGNAL(updateProgress(int, int)), processWindow, SLOT(updateProgress(int, int)));
+            connect(odooWorker, SIGNAL(updateStep(QString)), processWindow, SLOT(updateStep(QString)));
+
             connect(odooWorker, SIGNAL(updateAddress(QString)), processWindow, SLOT(updateAddress(QString)));
             connect(odooWorker, SIGNAL(updateUser(QString)), processWindow, SLOT(updateUser(QString)));
-            connect(odooWorker, SIGNAL(updateProgress(int, int)), processWindow, SLOT(updateProgress(int, int)));
+            connect(odooWorker, SIGNAL(updateJobs(int)), processWindow, SLOT(updateJobs(int)));
 
-            QtConcurrent::run(this, &FDOTool::do_odoo);
+            QtConcurrent::run(this, &FDOTool::doOdoo);
 
             break;
     }
@@ -130,11 +135,33 @@ int FDOTool::run() {
     return QApplication::exec();
 }
 
-void FDOTool::do_main() {
+void FDOTool::waitAndClose() {
+    QtConcurrent::run(this, &FDOTool::doWaitAndClose, false);
+}
+
+void FDOTool::doWaitAndClose(bool wait) {
+    if (wait)
+        QThread::sleep(2);
+
+    closeAllWindows();
+    exit();
+}
+
+void FDOTool::doMain() {
 
 }
 
-void FDOTool::do_odoo() {
-    for (const auto &action : actions)
-        odooWorker->doAction(action);
+void FDOTool::doOdoo() {
+    bool result = true;
+    for (const auto &action : actions) {
+        result = odooWorker->doAction(action);
+
+        if (!result) {
+            connect(processWindow, SIGNAL(waitAndClose()), this, SLOT(waitAndClose()));
+            break;
+        }
+    }
+
+    if (result)
+        doWaitAndClose(true);
 }

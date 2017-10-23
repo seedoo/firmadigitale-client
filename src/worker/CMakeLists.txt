@@ -10,7 +10,10 @@ add_library(worker
         ${FDOTOOL_WORKER_ODOO})
 
 target_link_libraries(worker
+        signer
         Qt5::Core
         Qt5::Network)
 
-target_include_directories(worker PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(worker
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR})

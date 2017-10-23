@@ -17,11 +17,17 @@ public:
 
 public slots:
 
-    void updateAddress(QString address);
-
-    void updateUser(QString user);
+    void rpcError(QString title, QString message);
 
     void updateProgress(int value, int max);
+
+    void updateStep(QString text = "");
+
+    void updateAddress(QString address = "");
+
+    void updateUser(QString user = "");
+
+    void updateJobs(int jobs = -1);
 
 private:
 
@@ -32,6 +38,10 @@ private:
 private slots:
 
     void handleClose();
+
+signals:
+
+    void waitAndClose();
 };
 
 #endif

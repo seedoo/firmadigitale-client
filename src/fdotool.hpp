@@ -41,9 +41,15 @@ private:
     MainWindow *mainWindow;
     ProcessWindow *processWindow;
 
-    void do_main();
+    void doWaitAndClose(bool wait = false);
 
-    void do_odoo();
+    void doMain();
+
+    void doOdoo();
+
+private slots:
+
+    void waitAndClose();
 
 };
 

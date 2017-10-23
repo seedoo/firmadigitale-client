@@ -1,3 +1,4 @@
+add_subdirectory(signer)
 add_subdirectory(worker)
 add_subdirectory(window)
 
@@ -41,6 +42,7 @@ add_executable(fdotool
         ${FDOTOOL_MAC_ICON_PATH})
 
 target_link_libraries(fdotool
+        signer
         worker
         window
         Qt5::Core
