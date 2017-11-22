@@ -118,6 +118,7 @@ bool OdooWorker::doAction(Action action) {
 
         if (actionToDo == "sign") {
             emit updateStep(QString("Signing data").arg(jobId).arg(content.length()));
+
             DigiSigner digiSigner(content);
             digiSigner.sign();
 

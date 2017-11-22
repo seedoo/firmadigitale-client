@@ -118,20 +118,6 @@ int FDOTool::run() {
             break;
     }
 
-//    QFile file(QDir::home().filePath(QString("%1-commands.log").arg(APPLICATION_NAME_SHORT)));
-//    if (!file.open(QIODevice::Append)) {
-//        qDebug() << "Unable to open file";
-//        QApplication::exit(1);
-//    }
-//
-//    QTextStream stream(&file);
-//    for (const auto &action : actions) {
-//        stream << QDateTime::currentDateTime().toString("yyyyMMdd HH:mm:ss") << " ---> "
-//               << action.getOdooUrl() << " | " << action.getToken() << endl;
-//    }
-//
-//    file.close();
-
     return QApplication::exec();
 }
 
