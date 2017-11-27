@@ -39,6 +39,8 @@ if (UNIX AND NOT APPLE)
     set(CPACK_DEBIAN_PACKAGE_SECTION "misc")
     set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
     set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS TRUE)
+
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libengine-pkcs11-openssl, opensc-pkcs11")
 elseif (WIN32)
     set(CPACK_GENERATOR "WIX")
 

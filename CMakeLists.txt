@@ -20,6 +20,9 @@ set(CMAKE_PREFIX_PATH "${QT5_PREFIX}/lib/cmake")
 
 enable_testing()
 
+include(cmake/config.cmake)
+
 add_subdirectory(src)
+add_subdirectory(tools)
 
 include(cmake/packaging.cmake)

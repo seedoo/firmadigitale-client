@@ -1,0 +1,126 @@
+diff -ru openssl-1.0.2m-orig/apps/smime.c openssl-1.0.2m/apps/smime.c
+--- openssl-1.0.2m-orig/apps/smime.c	2017-11-02 15:32:57.000000000 +0100
++++ openssl-1.0.2m/apps/smime.c	2017-11-22 10:02:21.712773761 +0100
+@@ -94,6 +94,7 @@
+     const char *inmode = "r", *outmode = "w";
+     char *infile = NULL, *outfile = NULL;
+     char *signerfile = NULL, *recipfile = NULL;
++    char *signerhashfile = NULL;
+     STACK_OF(OPENSSL_STRING) *sksigners = NULL, *skkeys = NULL;
+     char *certfile = NULL, *keyfile = NULL, *contfile = NULL;
+     const EVP_CIPHER *cipher = NULL;
+@@ -118,6 +119,8 @@
+ 
+     X509_VERIFY_PARAM *vpm = NULL;
+ 
++    PKCS7_SIGNER_INFO *si = NULL;
++
+     args = argv + 1;
+     ret = 1;
+ 
+@@ -255,6 +258,11 @@
+                 keyfile = NULL;
+             }
+             signerfile = *++args;
++        } else if (!strcmp (*args, "-signerhash")) {
++            if (!args[1])
++                goto argerr;
++
++            signerhashfile = *++args;
+         } else if (!strcmp(*args, "-recip")) {
+             if (!args[1])
+                 goto argerr;
+@@ -649,8 +657,68 @@
+                            "signing key file");
+             if (!key)
+                 goto end;
+-            if (!PKCS7_sign_add_signer(p7, signer, key, sign_md, flags))
++            if (!(si = PKCS7_sign_add_signer(p7, signer, key, sign_md, flags)))
+                 goto end;
++
++            if (signerhashfile) {
++                BIO *inhash;
++                int signed_string_nid = -1;
++
++                ASN1_OBJECT *algorithm_identifier;
++                ASN1_OCTET_STRING *certificate_hash;
++                ASN1_STRING *seq;
++
++                unsigned char *data;
++                unsigned char *data2;
++                unsigned char *p;
++                int size;
++                int total;
++                char buffer[65];
++
++                if (!(inhash = BIO_new_file(signerhashfile, "r"))) {
++                    BIO_printf (bio_err, "Can't open signerhash file %s\n", signerhashfile);
++                    goto end;
++                }
++
++                memset (buffer, 0, sizeof(buffer));
++                BIO_read(inhash, buffer, 64);
++                BIO_free(inhash);
++
++                /* ESSCertIDv2 */
++                algorithm_identifier = OBJ_nid2obj(NID_sha256);
++                certificate_hash = ASN1_OCTET_STRING_new();
++                ASN1_OCTET_STRING_set(certificate_hash, (unsigned char*) buffer, strlen(buffer));
++
++                size = i2d_ASN1_OBJECT(algorithm_identifier, NULL);
++                size += i2d_ASN1_OCTET_STRING(certificate_hash, NULL);
++                total = ASN1_object_size(1, size, V_ASN1_SEQUENCE);
++
++                data = malloc(total);
++                p = data;
++                ASN1_put_object(&p, 1, size, V_ASN1_SEQUENCE, V_ASN1_UNIVERSAL);
++                i2d_ASN1_OBJECT(algorithm_identifier, &p);
++                i2d_ASN1_OCTET_STRING(certificate_hash ,&p);
++
++                /* SigningCertificateV2 */
++                total = ASN1_object_size(1,size,V_ASN1_SEQUENCE);
++                data2 = malloc (total);
++                p = data2;
++                ASN1_put_object(&p, 1, size, V_ASN1_SEQUENCE, V_ASN1_UNIVERSAL);
++                memcpy(p, data, size);
++                seq = ASN1_STRING_new();
++                ASN1_STRING_set(seq,data,total);
++
++                signed_string_nid = OBJ_create("1.2.840.113549.1.9.16.2.47", "id-aa-signingCertificateV2", "id-aa-signingCertificateV2");
++                PKCS7_add_signed_attribute(si, signed_string_nid, V_ASN1_SEQUENCE, seq);
++
++                free(data2);
++                free(data);
++                ASN1_OCTET_STRING_free(certificate_hash);
++                ASN1_OBJECT_free(algorithm_identifier);
++            }
++
++            signerhashfile = NULL;
++
+             X509_free(signer);
+             signer = NULL;
+             EVP_PKEY_free(key);
+diff -ru openssl-1.0.2m-orig/doc/apps/smime.pod openssl-1.0.2m/doc/apps/smime.pod
+--- openssl-1.0.2m-orig/doc/apps/smime.pod	2017-11-02 15:32:58.000000000 +0100
++++ openssl-1.0.2m/doc/apps/smime.pod	2017-11-22 10:01:58.227873019 +0100
+@@ -19,6 +19,7 @@
+ [B<-no_alt_chains>]
+ [B<-certfile file>]
+ [B<-signer file>]
++[B<-signerhash file>]
+ [B<-recip  file>]
+ [B<-inform SMIME|PEM|DER>]
+ [B<-passin arg>]
+@@ -226,6 +227,12 @@
+ verified then the signers certificates will be written to this file if the
+ verification was successful.
+ 
++=item B<-signerhash file>
++
++the sha256sum of the DER-encoded public certificate used for signing the file.
++This, together with -md sha256, is required to output a pkcs#7 file conformant
++with cades.
++
+ =item B<-recip file>
+ 
+ the recipients certificate when decrypting a message. This certificate
