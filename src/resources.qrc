@@ -1,2 +1,6 @@
 <RCC>
+  <qresource prefix="/status">
+    <file alias="loading">../icons/status/loading.svg</file>
+    <file alias="completed">../icons/status/completed.svg</file>
+  </qresource>
 </RCC>

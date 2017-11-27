@@ -113,6 +113,10 @@ int FDOTool::run() {
             connect(odooWorker, SIGNAL(updateUser(QString)), processWindow, SLOT(updateUser(QString)));
             connect(odooWorker, SIGNAL(updateJobs(int)), processWindow, SLOT(updateJobs(int)));
 
+            connect(odooWorker, SIGNAL(workCompleted()), processWindow, SLOT(iconCompleted()));
+
+            processWindow->iconWorking();
+
             QtConcurrent::run(this, &FDOTool::doOdoo);
 
             break;

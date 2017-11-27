@@ -34,6 +34,9 @@ set(MACOSX_BUNDLE_EXECUTABLE_NAME fdotool)
 set(MACOSX_BUNDLE_BUNDLE_NAME FDOTool)
 set(MACOSX_BUNDLE_ICON_FILE ${FDOTOOL_MAC_ICON_NAME})
 
+configure_file(config.hpp.in ${CMAKE_BINARY_DIR}/config.hpp)
+include_directories(${CMAKE_BINARY_DIR})
+
 add_executable(fdotool
         WIN32 MACOSX_BUNDLE
         ${FDOTOOL_SOURCES}
