@@ -2,6 +2,7 @@
 #define __FDOTOOL_WINDOW_PROCESSWINDOW_H
 
 #include <QDialog>
+#include <QtSvg/QSvgWidget>
 
 namespace Ui {
     class ProcessWindow;
@@ -29,9 +30,15 @@ public slots:
 
     void updateJobs(int jobs = -1);
 
+    void iconWorking();
+
+    void iconCompleted();
+
 private:
 
     Ui::ProcessWindow *ui;
+
+    QSvgWidget *svgWidget;
 
     void signalConnect();
 

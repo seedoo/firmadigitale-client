@@ -6,6 +6,9 @@
 ProcessWindow::ProcessWindow(QWidget *parent) : QDialog(parent), ui(new Ui::ProcessWindow) {
     ui->setupUi(this);
 
+    svgWidget = new QSvgWidget();
+    ui->iconWidget->addWidget(svgWidget);
+
     updateAddress();
     updateUser();
     updateJobs();
@@ -14,6 +17,7 @@ ProcessWindow::ProcessWindow(QWidget *parent) : QDialog(parent), ui(new Ui::Proc
 }
 
 ProcessWindow::~ProcessWindow() {
+    delete svgWidget;
     delete ui;
 }
 
@@ -71,4 +75,12 @@ void ProcessWindow::updateJobs(int jobs) {
         ui->jobsValue->setStyleSheet("color: black;");
         ui->jobsValue->setText(QString::number(jobs));
     }
+}
+
+void ProcessWindow::iconWorking() {
+    svgWidget->load(QString(":/status/loading"));
+}
+
+void ProcessWindow::iconCompleted() {
+    svgWidget->load(QString(":/status/completed"));
 }
