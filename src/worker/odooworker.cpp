@@ -4,6 +4,7 @@
 #include <QtCore/QJsonDocument>
 #include <QtCore/QThread>
 #include <QtCore/QJsonArray>
+#include <QtWidgets/QInputDialog>
 
 #include "odooworker.hpp"
 #include "digisigner.hpp"
@@ -12,25 +13,15 @@ OdooWorker::OdooWorker(QObject *parent) : QObject(parent) {
 
 }
 
-OdooWorker::~OdooWorker() {
-
-}
-
 bool OdooWorker::doAction(Action action) {
     QVariantMap request;
     QVariantMap response;
 
-    int progress = 0;
-    int progressMax = FDOTOOL_ODOOWORKER_PROGRESS_MIN_STEPS;
-
-    emit updateProgress(progress, progressMax);
-    emit updateStep("Starting action");
+    workerProgress("Starting action", true);
 
     QThread::msleep(500);
 
-    progress++;
-    emit updateProgress(progress, progressMax);
-    emit updateStep("Getting URL");
+    workerProgress("Getting URL");
 
     odooUrl = action.getOdooUrl();
     token = action.getToken();
@@ -38,9 +29,7 @@ bool OdooWorker::doAction(Action action) {
 
     QThread::msleep(500);
 
-    progress++;
-    emit updateProgress(progress, progressMax);
-    emit updateStep("Requesting session bootstrap to Odoo");
+    workerProgress("Requesting session bootstrap to Odoo");
 
     request.clear();
     request.insert("token", token);
@@ -54,9 +43,7 @@ bool OdooWorker::doAction(Action action) {
         return false;
     }
 
-    progress++;
-    emit updateProgress(progress, progressMax);
-    emit updateStep("Getting user and jobs for session");
+    workerProgress("Getting user and jobs for session");
 
     QString user = response["userName"].toString();
     emit updateUser(user);
@@ -65,14 +52,31 @@ bool OdooWorker::doAction(Action action) {
     int jobs = jobsList.size();
     emit updateJobs(jobs);
 
-    progressMax = FDOTOOL_ODOOWORKER_PROGRESS_MIN_STEPS + (jobs * 5);
+    progressMax = FDOTOOL_ODOOWORKER_PROGRESS_MIN_STEPS + (jobs * 8);
+
+    workerProgress("Preparing to sign");
+
+    DigiSigner digiSigner;
+    connect(&digiSigner, SIGNAL(progressStep(QString)), this, SLOT(workerProgress(QString)));
+    connect(&digiSigner, SIGNAL(error(QString)), this, SLOT(workerError(QString)));
+
+    workerProgress("Initializing smart card");
+    if (!digiSigner.initCard())
+        return false;
+
+    workerProgress("Setting pin");
+    QString pin = getPinFromUser();
+    if (pin.length() == 0) {
+        emit rpcError("Smart Card error", "No PIN provided");
+        return false;
+    }
+
+    digiSigner.setPin(pin);
 
     for (const auto &job : jobsList) {
         qulonglong jobId = job.toULongLong();
 
-        progress++;
-        emit updateProgress(progress, progressMax);
-        emit updateStep(QString("Getting job %1").arg(jobId));
+        workerProgress(QString("Getting job %1").arg(jobId));
 
         request.clear();
         request.insert("token", token);
@@ -90,11 +94,7 @@ bool OdooWorker::doAction(Action action) {
         QString actionToDo = response["action"].toString();
         qulonglong attachmentId = response["attachmentId"].toULongLong();
 
-        emit updateStep(QString("Action to do: %1").arg(actionToDo));
-
-        progress++;
-        emit updateProgress(progress, progressMax);
-        emit updateStep(QString("Getting attachment %1").arg(attachmentId));
+        workerProgress(QString("Getting attachment %1, action to do: %2").arg(attachmentId).arg(actionToDo));
 
         request.clear();
         request.insert("token", token);
@@ -112,21 +112,12 @@ bool OdooWorker::doAction(Action action) {
         QString base64Content = response["content"].toString();
         QByteArray content = QByteArray::fromBase64(base64Content.toUtf8());
 
-        progress++;
-        emit updateProgress(progress, progressMax);
-        emit updateStep(QString("Attachment %1 is %2 bytes").arg(jobId).arg(content.length()));
+        workerProgress(QString("Attachment %1 is %2 bytes").arg(jobId).arg(content.length()));
 
         if (actionToDo == "sign") {
-            emit updateStep(QString("Signing data").arg(jobId).arg(content.length()));
+            QByteArray signedContent = digiSigner.cadesSign(content);
 
-            DigiSigner digiSigner(content);
-            digiSigner.sign();
-
-            QByteArray signedContent = digiSigner.getOutputData();
-
-            emit updateStep(QString("Signed file is %1 bytes").arg(signedContent.length()));
-
-            emit updateStep("Uploading result to Odoo");
+            workerProgress(QString("Signed file is %1 bytes, uploading result to Odoo").arg(signedContent.length()));
 
             request.clear();
             request.insert("token", token);
@@ -137,11 +128,30 @@ bool OdooWorker::doAction(Action action) {
             if (response.empty())
                 return false;
 
-            emit updateStep("Upload complete");
+            workerProgress("Upload complete");
         }
     }
 
+    disconnect(&digiSigner, SIGNAL(progressStep(QString)), this, SLOT(workerProgress(QString)));
+    disconnect(&digiSigner, SIGNAL(error(QString)), this, SLOT(workerError(QString)));
+
+    emit workCompleted();
+
     return true;
+}
+
+QString OdooWorker::getPinFromUser() {
+    QInputDialog *inputDialog = new QInputDialog();
+    inputDialog->setWindowModality(Qt::ApplicationModal);
+    inputDialog->setInputMode(QInputDialog::TextInput);
+    inputDialog->setTextEchoMode(QLineEdit::Password);
+    inputDialog->exec();
+
+    QString pin = inputDialog->textValue();
+
+    delete inputDialog;
+
+    return pin;
 }
 
 QVariantMap OdooWorker::jsonRpc(const QString &api, const QVariantMap &data) {
@@ -154,11 +164,8 @@ QVariantMap OdooWorker::jsonRpc(const QString &api, const QVariantMap &data) {
     requestBody.insert("params", QJsonValue::fromVariant(data));
 
     QByteArray rawResponse = doPost(QUrl(url), QJsonDocument(requestBody).toJson(QJsonDocument::Compact));
-
-    if (rawResponse.length() == 0) {
-        emit rpcError("RPC Error", "Empty response");
+    if (rawResponse.length() == 0)
         return QVariantMap();
-    }
 
     QJsonDocument responseDocument = QJsonDocument::fromJson(rawResponse);
     QJsonObject responseBody = responseDocument.object();
@@ -200,11 +207,33 @@ QByteArray OdooWorker::doPost(const QUrl &url, const QByteArray &requestBody) {
     if (networkError != QNetworkReply::NoError) {
         QString errorString = reply->errorString();
         emit rpcError("RPC Error", errorString);
-
         return QByteArray();
     }
 
     QByteArray responseData = reply->readAll();
+    if (responseData.length() == 0) {
+        emit rpcError("RPC Error", "Empty response");
+        return QByteArray();
+    }
 
     return responseData;
+}
+
+
+void OdooWorker::workerProgress(QString messaage, bool reset) {
+    if (reset) {
+        progress = -1;
+        progressMax = FDOTOOL_ODOOWORKER_PROGRESS_MIN_STEPS;
+    }
+
+    progress++;
+
+    if (messaage.length() > 0)
+            emit updateStep(messaage);
+
+    emit updateProgress(progress, progressMax);
+}
+
+void OdooWorker::workerError(QString messaage) {
+    emit rpcError("Signer Error", messaage);
 }

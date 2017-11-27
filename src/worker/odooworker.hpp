@@ -6,7 +6,7 @@
 
 #include "../action.hpp"
 
-#define FDOTOOL_ODOOWORKER_PROGRESS_MIN_STEPS 10
+#define FDOTOOL_ODOOWORKER_PROGRESS_MIN_STEPS 7
 
 #define FDOTOOL_ODOOWORKER_API_BOOTSTRAP "/fdo/1/action/bootstrap"
 #define FDOTOOL_ODOOWORKER_API_GETJOB "/fdo/1/action/getJob"
@@ -20,19 +20,27 @@ public:
 
     explicit OdooWorker(QObject *parent = Q_NULLPTR);
 
-    ~OdooWorker();
-
     bool doAction(Action action);
 
 private:
     QString odooUrl;
     QString token;
+    int progress;
+    int progressMax;
 
     QNetworkAccessManager qNetworkAccessManager;
+
+    QString getPinFromUser();
 
     QVariantMap jsonRpc(const QString &api, const QVariantMap &data);
 
     QByteArray doPost(const QUrl &url, const QByteArray &requestBody);
+
+private slots:
+
+    void workerProgress(QString messaage = "", bool reset = false);
+
+    void workerError(QString messaage = "");
 
 signals:
 
@@ -48,6 +56,7 @@ signals:
 
     void updateJobs(int jobs);
 
+    void workCompleted();
 };
 
 #endif
