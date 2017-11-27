@@ -40,10 +40,6 @@ void FDOTool::parseCommandLine() {
     parser.addVersionOption();
 
     QList<QCommandLineOption> commandLineOptions;
-    commandLineOptions.append(
-            QCommandLineOption(QStringList() << "l" << "list-certificates", tr("Elenco dei certificati disponibili")));
-    commandLineOptions.append(
-            QCommandLineOption(QStringList() << "c" << "list-devices", tr("Elenco dei dispositivi disponibili")));
     parser.addOptions(commandLineOptions);
 
     parser.addPositionalArgument("url", tr("URL fornito da Odoo"));
@@ -54,18 +50,15 @@ void FDOTool::parseCommandLine() {
     const QStringList args = parser.positionalArguments();
 
     if (!options.empty()) {
-        if (parser.isSet("l")) {
-
-        } else if (parser.isSet("c")) {
-
-        } else {
+        if (parser.isSet("h")) {
             parser.showHelp(1);
+        } else if (parser.isSet("v")) {
+
         }
     }
 
     if (args.empty()) {
-        // Error, show error dialog
-        parser.showHelp(1);
+        mode = MAIN;
         return;
     }
 
