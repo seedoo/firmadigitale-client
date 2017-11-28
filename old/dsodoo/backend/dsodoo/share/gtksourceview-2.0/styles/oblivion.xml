@@ -55,7 +55,7 @@
   <color name="aluminium5"                  value="#555753"/>
   <color name="aluminium6"                  value="#2e3436"/>
 
-  <!-- Global Settings -->
+  <!-- Global FDOSettings -->
   <style name="text"                        foreground="aluminium2" background="aluminium6"/>
   <style name="selection"                   foreground="aluminium1" background="aluminium4"/>
   <style name="cursor"                      foreground="aluminium2"/>

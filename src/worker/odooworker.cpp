@@ -191,6 +191,8 @@ QVariantMap OdooWorker::jsonRpc(const QString &api, const QVariantMap &data) {
 };
 
 QByteArray OdooWorker::doPost(const QUrl &url, const QByteArray &requestBody) {
+    QNetworkAccessManager qNetworkAccessManager;
+
     QEventLoop eventLoop;
     connect(&qNetworkAccessManager, SIGNAL(finished(QNetworkReply * )), &eventLoop, SLOT(quit()));
 
@@ -234,6 +236,6 @@ void OdooWorker::workerProgress(QString messaage, bool reset) {
     emit updateProgress(progress, progressMax);
 }
 
-void OdooWorker::workerError(QString messaage) {
-    emit rpcError("Signer Error", messaage);
+void OdooWorker::workerError(const QString &message) {
+    emit rpcError("Signer Error", message);
 }

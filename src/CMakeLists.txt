@@ -1,3 +1,5 @@
+add_subdirectory(settings)
+add_subdirectory(utility)
 add_subdirectory(signer)
 add_subdirectory(worker)
 add_subdirectory(window)
@@ -45,6 +47,8 @@ add_executable(fdotool
         ${FDOTOOL_MAC_ICON_PATH})
 
 target_link_libraries(fdotool
+        settings
+        utility
         signer
         worker
         window

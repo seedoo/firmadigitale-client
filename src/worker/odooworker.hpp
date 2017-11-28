@@ -28,8 +28,6 @@ private:
     int progress;
     int progressMax;
 
-    QNetworkAccessManager qNetworkAccessManager;
-
     QString getPinFromUser();
 
     QVariantMap jsonRpc(const QString &api, const QVariantMap &data);
@@ -40,7 +38,7 @@ private slots:
 
     void workerProgress(QString messaage = "", bool reset = false);
 
-    void workerError(QString messaage = "");
+    void workerError(const QString &message = "");
 
 signals:
 

@@ -48,7 +48,7 @@
   <color name="bluish_grey"                 value="#777777"/>
   <color name="steelblue3"                  value="#4f94cd"/>
 
-  <!-- Global Settings -->
+  <!-- Global FDOSettings -->
 
   <style name="text"                        foreground="white" background="dark_blue"/>
   <style name="selection"                   foreground="white" background="sky_blue"/>

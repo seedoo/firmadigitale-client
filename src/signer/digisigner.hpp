@@ -4,6 +4,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QProcess>
 #include <QtCore/QDir>
+#include <fdosettings.hpp>
 
 class DigiSigner : public QObject {
 Q_OBJECT
@@ -18,21 +19,16 @@ public:
 
     QByteArray cadesSign(const QByteArray &inputData);
 
-private:
-    static QDir installDir;
-
-    QString signerPKCS11Engine;
-    QString certificateId;
-    QString certificate;
-    QString pin;
-
     static QString getCertId();
 
     static QString getCert(QString id);
 
-    static void waitForString(QProcess &process, const QString &text);
+private:
+    QString certificateId;
+    QString certificate;
+    QString pin;
 
-    static QString locatePKCS11EngineLibrary();
+    static void waitForString(QProcess &process, const QString &text);
 
 signals:
 

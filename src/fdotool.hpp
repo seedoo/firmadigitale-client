@@ -51,6 +51,8 @@ private slots:
 
     void waitAndClose();
 
+    void showConfig();
+
 };
 
 #endif

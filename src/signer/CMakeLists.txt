@@ -13,7 +13,8 @@ add_library(signer
 
 target_link_libraries(signer
         Qt5::Core
-        Qt5::Network)
+        Qt5::Network
+        utility)
 
 target_include_directories(signer
         PUBLIC

@@ -1,6 +1,8 @@
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QUrlQuery>
 #include <QtConcurrent/QtConcurrent>
+#include <window/configdialog.hpp>
+#include <settings/manager.hpp>
 
 #include "fdotool.hpp"
 
@@ -16,6 +18,9 @@ int main(int argc, char *argv[]) {
 }
 
 FDOTool::FDOTool(int &argc, char **argv) : QApplication(argc, argv) {
+    SettingsManager::load();
+    SettingsManager::save();
+
     odooWorker = new OdooWorker();
 
     mainWindow = new MainWindow();
@@ -91,7 +96,11 @@ int FDOTool::run() {
 
         case MAIN:
             mainWindow->show();
+
+            connect(mainWindow, SIGNAL(showConfig()), this, SLOT(showConfig()));
+
             QtConcurrent::run(this, &FDOTool::doMain);
+
             break;
 
         case ODOO:
@@ -147,4 +156,10 @@ void FDOTool::doOdoo() {
 
     if (result)
         doWaitAndClose(true);
+}
+
+void FDOTool::showConfig() {
+    ConfigDialog configDialog;
+
+    configDialog.exec();
 }

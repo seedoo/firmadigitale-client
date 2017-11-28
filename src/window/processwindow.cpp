@@ -2,11 +2,12 @@
 #include "ui_processwindow.h"
 
 #include <QtWidgets>
+#include <QtSvg/QSvgRenderer>
 
 ProcessWindow::ProcessWindow(QWidget *parent) : QDialog(parent), ui(new Ui::ProcessWindow) {
     ui->setupUi(this);
 
-    svgWidget = new QSvgWidget();
+    svgWidget = new QSvgWidget(ui->iconWidget);
     ui->iconWidget->addWidget(svgWidget);
 
     updateAddress();
@@ -17,7 +18,6 @@ ProcessWindow::ProcessWindow(QWidget *parent) : QDialog(parent), ui(new Ui::Proc
 }
 
 ProcessWindow::~ProcessWindow() {
-    delete svgWidget;
     delete ui;
 }
 
