@@ -99,6 +99,9 @@ int FDOTool::run() {
 
             connect(mainWindow, SIGNAL(showConfig()), this, SLOT(showConfig()));
 
+            connect(this, SIGNAL(configUpdated()), processWindow, SLOT(updateToolsValues()));
+            connect(this, SIGNAL(configUpdated()), processWindow, SLOT(updateSmartcardValues()));
+
             QtConcurrent::run(this, &FDOTool::doMain);
 
             break;
@@ -160,6 +163,7 @@ void FDOTool::doOdoo() {
 
 void FDOTool::showConfig() {
     ConfigDialog configDialog;
-
     configDialog.exec();
+
+    emit configUpdated();
 }

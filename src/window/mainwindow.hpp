@@ -18,6 +18,12 @@ public:
 
     ~MainWindow();
 
+public slots:
+
+    void updateSmartcardValues();
+
+    void updateToolsValues();
+
 private:
     Ui::MainWindow *ui;
 
@@ -27,13 +33,7 @@ private:
 
     void initLineEdits();
 
-    void updateToolsValues();
-
     void doUpdateSmartcardValues();
-
-private slots:
-
-    void updateSmartcardValues();
 
 signals:
 

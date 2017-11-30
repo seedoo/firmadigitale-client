@@ -53,6 +53,9 @@ private slots:
 
     void showConfig();
 
+signals:
+
+    void configUpdated();
 };
 
 #endif
