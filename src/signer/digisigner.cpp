@@ -42,27 +42,27 @@ QByteArray DigiSigner::cadesSign(const QByteArray &inputData) {
     }
 
     QString tempFilePrefix = QDir(QDir::tempPath()).absoluteFilePath("tmpdigisigner");
-    std::string tempFilePrefixStr = tempFilePrefix.toStdString();
+//    std::string tempFilePrefixStr = tempFilePrefix.toStdString();
 
     QTemporaryFile crtFile(tempFilePrefix);
     crtFile.setAutoRemove(false);
     crtFile.open();
     crtFile.write(certificate.toLatin1());
     crtFile.close();
-    std::string crtFileStr = crtFile.fileName().toStdString();
+//    std::string crtFileStr = crtFile.fileName().toStdString();
 
     QTemporaryFile inFile(tempFilePrefix);
     inFile.setAutoRemove(false);
     inFile.open();
     inFile.write(inputData);
     inFile.close();
-    std::string inFileStr = inFile.fileName().toStdString();
+//    std::string inFileStr = inFile.fileName().toStdString();
 
     QTemporaryFile outFile(tempFilePrefix);
     outFile.setAutoRemove(false);
     outFile.open();
     outFile.close();
-    std::string outFileStr = outFile.fileName().toStdString();
+//    std::string outFileStr = outFile.fileName().toStdString();
 
     QString engineName = "pkcs11";
 
@@ -93,8 +93,8 @@ QByteArray DigiSigner::cadesSign(const QByteArray &inputData) {
     QString engineCmd = engineArgs.join(" ") + "\n";
     QString smimeCmd = smimeArgs.join(" ") + "\n";
 
-    std::string engineCmdStr = engineCmd.toStdString();
-    std::string smimeCmdStr = smimeCmd.toStdString();
+//    std::string engineCmdStr = engineCmd.toStdString();
+//    std::string smimeCmdStr = smimeCmd.toStdString();
 
     emit progressStep("Starting OpenSSL");
     QProcess process;
@@ -115,8 +115,8 @@ QByteArray DigiSigner::cadesSign(const QByteArray &inputData) {
     QByteArray stdOut = process.readAllStandardOutput();
     QByteArray stdErr = process.readAllStandardError();
 
-    std::string stdOutStr = stdOut.toStdString();
-    std::string stdErrStr = stdErr.toStdString();
+//    std::string stdOutStr = QString(stdOut).toStdString();
+//    std::string stdErrStr = QString(stdErr).toStdString();
 
     process.terminate();
     process.waitForFinished();
