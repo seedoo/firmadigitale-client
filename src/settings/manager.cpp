@@ -1,18 +1,18 @@
 #include <QtCore/QSettings>
+#include <utility.hpp>
 
 #include "manager.hpp"
 #include "fdosettings.hpp"
-#include "defaults.hpp"
 
 void SettingsManager::load() {
     FDOSettings *fdoSettings = FDOSettings::getInstance();
     QSettings settings;
 
     settings.beginGroup("tools");
-    fdoSettings->setPkcsToolBin(settings.value("pkcsToolBin", SETTINGS_PKCSTOOL_BIN_DEFAULT).toString());
-    fdoSettings->setPkcsEngineLib(settings.value("pkcsEngineLib", SETTINGS_PKCSENGINE_LIB_DEFAULT).toString());
-    fdoSettings->setOpensslBin(settings.value("opensslBin", SETTINGS_OPENSSL_BIN_DEFAULT).toString());
-    fdoSettings->setSmartcardLib(settings.value("smartcardLib", SETTINGS_SMARTCARD_LIB_DEFAULT).toString());
+    fdoSettings->setPkcsToolBin(settings.value("pkcsToolBin", PathUtility::discoverPkcsToolBin()).toString());
+    fdoSettings->setPkcsEngineLib(settings.value("pkcsEngineLib", PathUtility::discoverPkcsEngineLib()).toString());
+    fdoSettings->setOpensslBin(settings.value("opensslBin", PathUtility::discoverOpenSSLBin()).toString());
+    fdoSettings->setSmartcardLib(settings.value("smartcardLib", PathUtility::discoverSmartcardLib()).toString());
     settings.endGroup();
 }
 

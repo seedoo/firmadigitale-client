@@ -3,7 +3,6 @@ set(FDOTOOL_SETTINGS_SOURCES
         manager.cpp)
 
 set(FDOTOOL_SETTINGS_HEADERS
-        defaults.hpp
         fdosettings.hpp
         manager.hpp)
 
@@ -15,7 +14,8 @@ add_library(settings
         ${FDOTOOL_SETTINGS_HEADERS})
 
 target_link_libraries(settings
-        Qt5::Core)
+        Qt5::Core
+        utility)
 
 target_include_directories(settings
         PUBLIC

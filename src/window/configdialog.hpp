@@ -48,6 +48,8 @@ private slots:
     void handlePkcsEngineAuto();
 
     void handleOpenSSLAuto();
+
+    void handleSmartcardAuto();
 };
 
 #endif

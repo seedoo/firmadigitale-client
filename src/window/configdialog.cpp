@@ -24,6 +24,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent), ui(new Ui::Config
     connect(ui->pkcsToolBinAuto, SIGNAL(clicked(bool)), this, SLOT(handlePkcsToolAuto()));
     connect(ui->pkcsEngineLibAuto, SIGNAL(clicked(bool)), this, SLOT(handlePkcsEngineAuto()));
     connect(ui->opensslBinAuto, SIGNAL(clicked(bool)), this, SLOT(handleOpenSSLAuto()));
+    connect(ui->smartcardLibAuto, SIGNAL(clicked(bool)), this, SLOT(handleSmartcardAuto()));
 
     load();
 }
@@ -150,13 +151,33 @@ void ConfigDialog::handleSmartcardBrowse() {
 }
 
 void ConfigDialog::handlePkcsToolAuto() {
-    ui->pkcsToolBinValue->setText(PathUtility::discoverPkcsToolBin());
+    QString defaultValue = PathUtility::discoverPkcsToolBin();
+    if (defaultValue.length() == 0)
+        QMessageBox::critical(this, "Error finding automatic value", "Unable to find the right value automatically");
+
+    ui->pkcsToolBinValue->setText(defaultValue);
 }
 
 void ConfigDialog::handlePkcsEngineAuto() {
-    ui->pkcsEngineLibValue->setText(PathUtility::discoverPkcsEngineLib());
+    QString defaultValue = PathUtility::discoverPkcsEngineLib();
+    if (defaultValue.length() == 0)
+        QMessageBox::critical(this, "Error finding automatic value", "Unable to find the right value automatically");
+
+    ui->pkcsEngineLibValue->setText(defaultValue);
 }
 
 void ConfigDialog::handleOpenSSLAuto() {
-    ui->opensslBinValue->setText(PathUtility::discoverOpenSSLBin());
+    QString defaultValue = PathUtility::discoverOpenSSLBin();
+    if (defaultValue.length() == 0)
+        QMessageBox::critical(this, "Error finding automatic value", "Unable to find the right value automatically");
+
+    ui->opensslBinValue->setText(defaultValue);
+}
+
+void ConfigDialog::handleSmartcardAuto() {
+    QString defaultValue = PathUtility::discoverSmartcardLib();
+    if (defaultValue.length() == 0)
+        QMessageBox::critical(this, "Error finding automatic value", "Unable to find the right value automatically");
+
+    ui->smartcardLibValue->setText(defaultValue);
 }

@@ -1,8 +1,6 @@
 include(ExternalProject)
 
 if (WIN32)
-    set(TOOLS_INSTALL_DIR ".")
-
     if ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
         set(TOOLS_OPENSSL_CONFIGURE_ARCH "VC-WIN64A")
         set(TOOLS_OPENSSL_CONFIGURE_DO "ms\\do_win64a.bat")
@@ -17,8 +15,6 @@ if (WIN32)
 
     set(TOOLS_OPENSSL_BINARY openssl.exe)
 elseif (APPLE)
-    set(TOOLS_INSTALL_DIR /opt/fdotool)
-
     if ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
         set(TOOLS_OPENSSL_CONFIGURE_ARCH "linux-x86_64")
     else ()
@@ -31,8 +27,6 @@ elseif (APPLE)
 
     set(TOOLS_OPENSSL_BINARY openssl)
 else ()
-    set(TOOLS_INSTALL_DIR /opt/fdotool)
-
     if ("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
         set(TOOLS_OPENSSL_CONFIGURE_ARCH "linux-x86_64")
     else ()
@@ -72,5 +66,5 @@ if (WIN32)
 endif ()
 
 install(PROGRAMS ${CMAKE_BINARY_DIR}/openssl_patched/bin/${TOOLS_OPENSSL_BINARY}
-        DESTINATION ${TOOLS_INSTALL_DIR}
+        DESTINATION ${FDOTOOL_TOOLS_INSTALL_DIR}
         COMPONENT OpenSSLPatched)

@@ -149,7 +149,7 @@
       <attribute name="title">
        <string>Smart Card</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1" columnstretch="0,1,0">
+      <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1" columnstretch="0,1,0,0">
        <item row="0" column="0">
         <widget class="QLabel" name="smartcardLibLabel">
          <property name="text">
@@ -161,6 +161,24 @@
         <widget class="QLineEdit" name="smartcardLibValue">
          <property name="readOnly">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QToolButton" name="smartcardLibBrowse">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QToolButton" name="smartcardLibAuto">
+         <property name="text">
+          <string>auto</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/buttons/refresh</normaloff>:/buttons/refresh</iconset>
          </property>
         </widget>
        </item>
@@ -176,13 +194,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-       <item row="0" column="2">
-        <widget class="QToolButton" name="smartcardLibBrowse">
-         <property name="text">
-          <string>...</string>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>
