@@ -99,8 +99,8 @@ int FDOTool::run() {
 
             connect(mainWindow, SIGNAL(showConfig()), this, SLOT(showConfig()));
 
-            connect(this, SIGNAL(configUpdated()), processWindow, SLOT(updateToolsValues()));
-            connect(this, SIGNAL(configUpdated()), processWindow, SLOT(updateSmartcardValues()));
+            connect(this, SIGNAL(configUpdated()), mainWindow, SLOT(updateToolsValues()));
+            connect(this, SIGNAL(configUpdated()), mainWindow, SLOT(updateSmartcardValues()));
 
             QtConcurrent::run(this, &FDOTool::doMain);
 
