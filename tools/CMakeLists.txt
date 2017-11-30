@@ -40,7 +40,7 @@ else ()
     set(TOOLS_OPENSSL_BINARY openssl)
 endif ()
 
-set(TOOLS_OPENSSL_BUILD_DIRECTORY ${CMAKE_BINARY_DIR}/openssl_patched)
+set(TOOLS_OPENSSL_BUILD_DIRECTORY ${CMAKE_BINARY_DIR}/build_openssl_patched)
 
 ExternalProject_Add(
         OpenSSLPatched
