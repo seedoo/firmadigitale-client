@@ -1,4 +1,4 @@
-set(CPACK_PACKAGE_NAME "Firma Digitale Odoo")
+#set(CPACK_PACKAGE_NAME "Firma Digitale Odoo")
 set(CPACK_PACKAGE_VENDOR "Seedoo")
 
 set(CPACK_PACKAGE_VERSION_MAJOR "0")
