@@ -16,11 +16,12 @@ set(FDOTOOL_WINDOW_CONFIG
 find_package(Qt5 REQUIRED COMPONENTS
         Core
         Widgets
-        Gui)
+        Gui
+        Svg)
 
 include_directories(${CMAKE_BINARY_DIR})
 
-add_library(window
+add_library(window STATIC
         ${FDOTOOL_WINDOW_MAIN}
         ${FDOTOOL_WINDOW_PROCESS}
         ${FDOTOOL_WINDOW_CONFIG})
@@ -29,7 +30,7 @@ target_link_libraries(window
         Qt5::Core
         Qt5::Gui
         Qt5::Widgets
-        utility
+        Qt5::Svg
         signer)
 
 target_include_directories(window PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

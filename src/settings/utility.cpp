@@ -1,7 +1,7 @@
-#include <config.hpp>
 #include <QtCore/QProcess>
 #include <QtCore/QFileInfo>
 
+#include "config.hpp"
 #include "utility.hpp"
 
 QString PathUtility::discoverPkcsToolBin() {

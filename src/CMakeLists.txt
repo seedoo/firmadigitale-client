@@ -1,9 +1,3 @@
-add_subdirectory(settings)
-add_subdirectory(utility)
-add_subdirectory(signer)
-add_subdirectory(worker)
-add_subdirectory(window)
-
 set(FDOTOOL_SOURCES
         fdotool.cpp
         action.cpp)
@@ -39,6 +33,11 @@ set(MACOSX_BUNDLE_ICON_FILE ${FDOTOOL_MAC_ICON_NAME})
 configure_file(config.hpp.in ${CMAKE_BINARY_DIR}/config.hpp)
 include_directories(${CMAKE_BINARY_DIR})
 
+add_subdirectory(settings)
+add_subdirectory(signer)
+add_subdirectory(worker)
+add_subdirectory(window)
+
 add_executable(fdotool
         WIN32 MACOSX_BUNDLE
         ${FDOTOOL_SOURCES}
@@ -47,16 +46,15 @@ add_executable(fdotool
         ${FDOTOOL_MAC_ICON_PATH})
 
 target_link_libraries(fdotool
-        settings
-        utility
-        signer
-        worker
-        window
         Qt5::Core
         Qt5::Gui
         Qt5::Svg
         Qt5::Widgets
-        Qt5::Concurrent)
+        Qt5::Concurrent
+        settings
+        signer
+        worker
+        window)
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/windeployqt)
 

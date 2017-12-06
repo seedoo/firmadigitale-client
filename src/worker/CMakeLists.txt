@@ -6,7 +6,7 @@ find_package(Qt5 REQUIRED COMPONENTS
         Core
         Network)
 
-add_library(worker
+add_library(worker STATIC
         ${FDOTOOL_WORKER_ODOO})
 
 target_link_libraries(worker
